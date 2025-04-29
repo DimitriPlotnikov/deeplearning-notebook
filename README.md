@@ -8,9 +8,15 @@
 
 1. Clone repository and prepare Docker:
 ```
-git clone git@github.com:DimitriPlotnikov/deeplearning-notebook.git
+git clone https://github.com/DimitriPlotnikov/deeplearning-notebook.git
 cd deeplearning-notebook/docker
 docker build . -t deeplearning-lab
+```
+
+Known issues with WSL and Docker:
+* If the mount is read-only try to run the following command in your wsl:
+```
+sudo chmod -R a+rw /path-to-your-repo/deeplearning-notebook
 ```
 
 2. Run Jupyter Lab:
