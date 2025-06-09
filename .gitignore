@@ -4,3 +4,4 @@
 **/*venv*
 **/*embeddings*
 **/*.pt*
+**/*glove*
