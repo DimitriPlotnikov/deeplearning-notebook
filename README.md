@@ -1,7 +1,7 @@
 # DeepLearning & PyTorch Training Repository
 
 ## Prerequisites
-- Docker installed
+- Docker or Podman installed
 - Git installed
 
 ## Quick Start
@@ -11,6 +11,8 @@
 git clone https://github.com/DimitriPlotnikov/deeplearning-notebook.git
 cd deeplearning-notebook/docker
 docker build . -t deeplearning-lab
+# Or with Podman:
+podman build . -t deeplearning-lab
 ```
 
 Known issues with WSL and Docker:
@@ -20,9 +22,16 @@ sudo chmod -R a+rw /path-to-your-repo/deeplearning-notebook
 ```
 
 2. Run Jupyter Lab:
+
+The `--userns=keep-id` flag with your host UID/GID ensures proper file permissions between the container and host system. This is particularly important for systems with SELinux enforcement, as it maintains consistent user identity mapping between host and container environments.
+
+Alternative fixed UID/GID format (replace 1000/100 with your actual IDs):
+
 ```
-cd deeplearning-notebook  # Return to repository root
-docker run -it --rm -p 8888:8888 -v ./:/home/jovyan/work deeplearning-lab
+cd /path-to-your-repo/deeplearning-notebook  # Return to repository root (deeplearning-notebook)
+docker run --userns=keep-id:uid=$(id -u),gid=$(id -g) -it --rm -p 8888:8888 -v $(pwd):/home/jovyan/work deeplearning-lab
+# Or with Podman:
+podman run --userns=keep-id:uid=$(id -u),gid=$(id -g) -it --rm -p 8888:8888 -v $(pwd):/home/jovyan/work deeplearning-lab
 ```
 
 3. Access Jupyter:
