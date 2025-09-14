@@ -103,3 +103,4 @@ Please note that updating to Notebook 7 might break some of your extensions.
 - All work saves to `./` (repo root) via Docker volume
 - Server runs Jupyter Lab with PyTorch environment
 - Token changes every launch - _always check console for current token_
+- You can use the `build_and_run.sh` script. E.g. `bash build_and_run.sh podman build` and `bash build_and_run.sh podman run`
