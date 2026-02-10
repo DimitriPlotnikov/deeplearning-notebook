@@ -39,11 +39,17 @@ build_image() {
 
 run_container() {
     echo "Running container with $RUNTIME..."
-    $RUNTIME run --userns=keep-id:uid=$(id -u),gid=$(id -g) \
-                -it --rm \
-                -p 8888:8888 \
-                -v "$(pwd):/home/jovyan/work" \
-                deeplearning-lab
+
+    if [ "$RUNTIME" = "podman" ]; then
+        EXTRA_FLAGS="--userns=keep-id -v $(pwd):/home/jovyan/work:Z"
+    else
+        EXTRA_FLAGS="-v $(pwd):/home/jovyan/work"
+    fi
+
+    $RUNTIME run -it --rm \
+        -p 8888:8888 \
+        $EXTRA_FLAGS \
+        deeplearning-lab
 }
 
 # Parse arguments
