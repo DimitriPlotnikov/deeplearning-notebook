@@ -40,13 +40,26 @@ build_image() {
 run_container() {
     echo "Running container with $RUNTIME..."
 
-    if [ "$RUNTIME" = "podman" ]; then
-        EXTRA_FLAGS="--userns=keep-id -v $(pwd):/home/jovyan/work:Z"
-    else
-        EXTRA_FLAGS="-v $(pwd):/home/jovyan/work"
+    # Disable Git Bash path mangling
+    export MSYS_NO_PATHCONV=1
+    export MSYS2_ARG_CONV_EXCL="*"
+
+    HOST_PWD="$(pwd -W 2>/dev/null || pwd)"
+
+    # Convert C:\Users\X\project → /mnt/c/Users/X/project
+    if [[ "$HOST_PWD" =~ ^[A-Za-z]: ]]; then
+        DRIVE=$(echo "${HOST_PWD:0:1}" | tr '[:upper:]' '[:lower:]')
+        HOST_PWD="/mnt/${DRIVE}${HOST_PWD:2}"
+        HOST_PWD="${HOST_PWD//\\//}"
     fi
 
-    $RUNTIME run -it --rm \
+    if [ "$RUNTIME" = "podman" ]; then
+        EXTRA_FLAGS="--userns=keep-id -v \"$HOST_PWD:/home/jovyan/work:Z\""
+    else
+        EXTRA_FLAGS="-v \"$HOST_PWD:/home/jovyan/work\""
+    fi
+
+    eval $RUNTIME run -it --rm \
         -p 8888:8888 \
         $EXTRA_FLAGS \
         deeplearning-lab
