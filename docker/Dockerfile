@@ -1,4 +1,4 @@
-FROM quay.io/jupyter/pytorch-notebook:pytorch-2.3.0
+FROM quay.io/jupyter/pytorch-notebook:pytorch-2.13.0
 
 # Install in the default python3 environment
 RUN pip install --no-cache-dir 'flake8' && \
